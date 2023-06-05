@@ -1,4 +1,3 @@
-project-3.yaml
 ---
 - name: Install and configure Firewall, Database, and Web Server
   hosts: my_servers
