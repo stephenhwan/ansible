@@ -1,4 +1,4 @@
-hosts.yaml
+
 all:
   hosts:
     my_servers:
