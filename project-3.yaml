@@ -5,15 +5,23 @@
   tasks:
     - name: Copy file
       copy:
-        src: /home/ubuntu/python.sh
+        src: /home/ubuntu/ansible/python.sh
         dest: /home/ubuntu
-
+    - name: chmod python.sh
+      file:
+        path: /home/ubuntu/python.sh
+        mode: '0755'
     - name: Run bash script
       command: bash /home/ubuntu/python.sh
     - name: Install MariaDB
       apt:
         name: mariadb-server
         state: present
+        update_cache: yes
+        become: true
+        environment:
+          MYSQL_HOME: /home/ubuntu
+          HOME: /home/ubuntu
 
     - name: Start MariaDB service
       service:
@@ -39,10 +47,7 @@
       become: true
 
     - name: Load Product Inventory Information to database
-      mysql_db:
-        name: inventory
-        state: import
-        target: /path/to/inventory.sql
+      shell: mysql -u inventoryuser -pmypassword inventory < /home/ubuntu/inventory.sql
       become: true
 
     - name: Configure firewall for Web Server
@@ -67,6 +72,7 @@
         name: apache2
         state: started
         enabled: true
+
     - name: Install Firewalld
       apt:
         name: firewalld
