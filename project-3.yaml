@@ -2,25 +2,14 @@
 - name: Install and configure Firewall, Database, and Web Server
   hosts: my_servers
   become: true
-
   tasks:
-    - name: Install Firewalld
-      apt:
-        name: firewalld
-        state: present
+    - name: Copy file
+      copy:
+        src: /home/ubuntu/python.sh
+        dest: /home/ubuntu
 
-    - name: Ensure Firewalld is running
-      service:
-        name: firewalld
-        state: started
-        enabled: true
-
-    - name: Configure firewall for Database
-      firewalld:
-        service: mysql
-        permanent: true
-        state: enabled
-
+    - name: Run bash script
+      command: bash /home/ubuntu/python.sh
     - name: Install MariaDB
       apt:
         name: mariadb-server
@@ -37,6 +26,8 @@
         name: inventory
         state: present
       become: true
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
 
     - name: Create user in database
       mysql_user:
@@ -76,3 +67,19 @@
         name: apache2
         state: started
         enabled: true
+    - name: Install Firewalld
+      apt:
+        name: firewalld
+        state: present
+
+    - name: Ensure Firewalld is running
+      service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: Configure firewall for Database
+      firewalld:
+        service: mysql
+        permanent: true
+        state: enabled
